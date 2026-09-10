@@ -13,6 +13,8 @@ export interface RomFsDirectory {
   detectedScenes?: string[];
   detectedTexturesCount?: number;
   fileTree?: Record<string, string[]>;
+  dirHandle?: any; // FileSystemDirectoryHandle
+  zipObject?: any; // JSZip
 }
 
 export type EditorMode = 'scene' | 'collision' | 'textures' | 'scripts' | 'music';

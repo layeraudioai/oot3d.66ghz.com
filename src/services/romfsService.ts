@@ -19,6 +19,8 @@ export interface RomfsScanResult {
   detectedScenes?: string[];
   detectedTexturesCount?: number;
   fileTree?: Record<string, string[]>;
+  dirHandle?: any;
+  zipObject?: any;
 }
 
 /**
@@ -234,6 +236,7 @@ export async function parseRomfsZip(zipFile: File): Promise<RomfsScanResult> {
     detectedScenes,
     detectedTexturesCount,
     fileTree: tree,
+    zipObject: zip,
   };
 
   return {
@@ -243,6 +246,7 @@ export async function parseRomfsZip(zipFile: File): Promise<RomfsScanResult> {
     detectedScenes,
     detectedTexturesCount,
     fileTree: tree,
+    zipObject: zip,
   };
 }
 
@@ -303,9 +307,11 @@ export async function promptRomfsDirectoryPicker(): Promise<RomfsScanResult> {
         filesCount: Math.max(fileCount, 24),
         isCustomLoaded: true,
         hasUnsavedChanges: false,
+        dirHandle,
       },
       detectedFolders,
       detectedFiles,
+      dirHandle,
     };
   } catch (err: any) {
     if (err.name === 'SecurityError' || err.name === 'NotAllowedError') {
@@ -376,9 +382,31 @@ export function parseRomfsFileList(files: FileList | File[]): RomfsScanResult {
 }
 
 /**
- * Packages all scene changes, collision maps, converted textures (oot3d-texkit),
- * and custom actor scripts into a standard Luma3DS LayeredFS mod structure.
+ * Retrieves file content as ArrayBuffer from the loaded RomFS directory or ZIP
  */
+export async function getFileContent(dir: RomFsDirectory, filePath: string): Promise<ArrayBuffer> {
+  if (dir.dirHandle) {
+    const parts = filePath.split('/');
+    let currentHandle: any = dir.dirHandle;
+    
+    // Traverse directories
+    for (let i = 0; i < parts.length - 1; i++) {
+      currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+    }
+    
+    const fileHandle = await currentHandle.getFileHandle(parts[parts.length - 1]);
+    const file = await fileHandle.getFile();
+    return await file.arrayBuffer();
+  } else if (dir.zipObject) {
+    // Normalize path for ZIP
+    const normalizedPath = filePath.replace(/^\//, '');
+    const entry = dir.zipObject.file(normalizedPath);
+    if (!entry) throw new Error(`File not found in ZIP: ${filePath}`);
+    return await entry.async('arraybuffer');
+  }
+  throw new Error('No valid ROMFS source loaded');
+}
+
 export async function buildLumaRomfsZip(
   scenes: OoT3DScene[],
   textures: OoT3DTexture[],

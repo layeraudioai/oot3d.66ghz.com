@@ -16,6 +16,7 @@ import {
   NoteEvent,
   soundEngine,
 } from '../utils/audioSynth';
+import { getFileContent } from '../services/romfsService';
 import {
   Music,
   Play,
@@ -62,6 +63,20 @@ export const MusicEditor: React.FC<MusicEditorProps> = ({
   currentDirectory,
 }) => {
   const [selectedTrackId, setSelectedTrackId] = useState<string>(tracks[0]?.id || 'bgm_kokiri');
+  
+  // Real audio data loading
+  useEffect(() => {
+    const selectedTrack = tracks.find((t) => t.id === selectedTrackId);
+    if (selectedTrack && currentDirectory && selectedTrack.isCustom) {
+      getFileContent(currentDirectory, selectedTrack.filePath)
+        .then((buffer) => {
+          // Here you would feed the buffer into your soundEngine or audio player.
+          // For now, we confirm load and log size.
+          console.log(`Loaded ${selectedTrack.filePath}, size: ${buffer.byteLength} bytes`);
+        })
+        .catch(console.error);
+    }
+  }, [selectedTrackId, currentDirectory]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isPlaying, setIsPlaying] = useState<boolean>(false);

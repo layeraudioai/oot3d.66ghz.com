@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   CTR_FORMAT_SPECS,
   calculateTextureSize,
   processReplacementImage,
 } from '../services/texkitService';
-import { CTRTextureFormat, OoT3DTexture } from '../types/oot3d';
+import { getFileContent } from '../services/romfsService';
+import { CTRTextureFormat, OoT3DTexture, RomFsDirectory } from '../types/oot3d';
 import {
   Image as ImageIcon,
   Upload,
@@ -22,6 +23,7 @@ interface TextureKitEditorProps {
   onUpdateTexture: (updated: OoT3DTexture) => void;
   selectedTextureId: string | null;
   onSelectTexture: (id: string) => void;
+  currentDirectory: RomFsDirectory | null;
 }
 
 export const TextureKitEditor: React.FC<TextureKitEditorProps> = ({
@@ -29,6 +31,7 @@ export const TextureKitEditor: React.FC<TextureKitEditorProps> = ({
   onUpdateTexture,
   selectedTextureId,
   onSelectTexture,
+  currentDirectory,
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [hue, setHue] = useState<number>(0);
@@ -39,6 +42,17 @@ export const TextureKitEditor: React.FC<TextureKitEditorProps> = ({
 
   const selectedTex =
     textures.find((t) => t.id === selectedTextureId) || textures[0];
+
+  // Load actual file content on demand
+  useEffect(() => {
+    if (selectedTex && currentDirectory && !selectedTex.dataUrl.startsWith('data:')) {
+      getFileContent(currentDirectory, selectedTex.originalPath).then((buffer) => {
+        const blob = new Blob([buffer], { type: 'image/png' });
+        const url = URL.createObjectURL(blob);
+        onUpdateTexture({ ...selectedTex, dataUrl: url });
+      }).catch(console.error);
+    }
+  }, [selectedTex, currentDirectory]);
 
   const filteredTextures =
     activeCategory === 'all'

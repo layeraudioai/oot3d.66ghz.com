@@ -569,6 +569,7 @@ export default function App() {
             onUpdateTexture={handleUpdateTexture}
             selectedTextureId={selectedTextureId}
             onSelectTexture={setSelectedTextureId}
+            currentDirectory={currentDirectory}
           />
         ) : editorMode === 'scripts' ? (
           /* If in Custom Script Attacher Mode */
