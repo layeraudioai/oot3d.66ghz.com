@@ -1,0 +1,70 @@
+{
+    "name": "stb-vorbis",
+    "version": "0.0.6",
+    "description": "Synchronous Ogg Vorbis decoder for JavaScript and WebAssembly",
+    "type": "module",
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "npm run test:types && npm run build:wasm",
+        "lint": "eslint .",
+        "format": "prettier . --write",
+        "test:types": "npm run lint && tsc -b",
+        "build:wasm": "tsx scripts/build-wasm.ts",
+        "prepublishOnly": "npm run build"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@types/node": "^26.2.0",
+        "esbuild": "^0.28.2",
+        "eslint": "^10.8.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-unicorn": "^73.0.0",
+        "globals": "^17.9.0",
+        "prettier": "^3.9.6",
+        "tsx": "^4.23.11",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.66.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/spessasus/stb-vorbis.git"
+    },
+    "keywords": [
+        "ogg",
+        "vorbis",
+        "audio",
+        "audio-decoder",
+        "pcm",
+        "stb-vorbis",
+        "stb_vorbis",
+        "wasm",
+        "webassembly",
+        "javascript",
+        "typescript",
+        "audioworklet",
+        "audio-worklet",
+        "browser"
+    ],
+    "author": {
+        "name": "spessasus",
+        "email": "spesekspesek@gmail.com",
+        "url": "https://github.com/spessasus"
+    },
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/spessasus/stb-vorbis/issues",
+        "email": "spesekspesek@gmail.com"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE",
+        "package.json"
+    ],
+    "homepage": "https://github.com/spessasus/stb-vorbis#readme",
+    "allowScripts": {
+        "esbuild@0.28.2": true
+    }
+}
