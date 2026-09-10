@@ -18,7 +18,6 @@ to compile the standalone html js and css file(s) [1 html 1 css 1 js] from this 
 - `git clone https://github.com/layeraudioai/oot3d.66ghz.com`
 - `cd oot3d.66ghz.com`
 - `npm run build`
--
 - out is in dist/ (only need the 3 files, can delete aistudio dir within the dist dir np)
 ---
 node.js is us ed with vite, esm, three.js, etc
