@@ -1,0 +1,6 @@
+{
+  "name": "Ocarina of Time 3D Level Editor",
+  "description": "Visual scene, collision map, texture replacement, and custom actor script editor for OoT3D RomFS dumps on Nintendo 3DS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
